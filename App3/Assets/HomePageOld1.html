@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Safari Style Homepage</title>
+  <style>
+    html, body {
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      background: #f5f6f7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      font-size: 17px;
+      letter-spacing: 0;
+      line-height: 1.5;
+      transition: background 0.5s;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 0 24px;
+    }
+    .favorites-title, .privacy-title, .frequent-title {
+      font-size: 1.45rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      margin-top: 0;
+      color: #222;
+      text-align: left;
+      letter-spacing: 0;
+    }
+    .favorites-grid, .frequent-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px 28px;
+      margin-bottom: 36px;
+    }
+    .favorite-link, .frequent-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90px;
+      text-decoration: none;
+      color: #222;
+      user-select: none;
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+    }
+    /* Acrylic effect for cards */
+    .favorite-icon, .frequent-icon, .privacy-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 2px 8px rgba(60,60,120,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    /* Adjust privacy-box size and padding */
+    .privacy-box {
+      width: auto;
+      min-height: 72px;
+      border-radius: 12px;
+      padding: 18px 22px;
+      font-size: 1.05rem;
+      color: #444;
+      box-shadow: 0 2px 8px rgba(60,60,120,0.06);
+      align-items: center;
+      display: flex;
+    }
+    .favorite-icon img, .frequent-icon img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      background: none;
+      display: block;
+    }
+    .favorite-label, .frequent-label {
+      font-size: 1rem;
+      text-align: center;
+      color: #222;
+      max-width: 90px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    .privacy-section {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 700px;
+    }
+    .privacy-title {
+      margin-bottom: 12px;
+    }
+    .privacy-icon {
+      width: 28px;
+      height: 28px;
+      margin-right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+    }
+    /* Bottom right menu styles */
+    .bottom-right-menu {
+      position: fixed;
+      right: 24px;
+      bottom: 18px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(60,60,120,0.10);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      z-index: 100;
+      transition: background 0.3s;
+      border: 1px solid #e0e0e2;
+    }
+    .menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .menu-btn:hover {
+      background: #f0f0f2;
+    }
+    .menu-btn svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      color: #888;
+    }
+    .wallpaper-picker {
+      display: none;
+      position: absolute;
+      bottom: 48px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #e0e0e2;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(60,60,120,0.10);
+      padding: 12px 16px;
+      z-index: 101;
+    }
+    .wallpaper-picker label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.98rem;
+      color: #333;
+    }
+    .wallpaper-options {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .wallpaper-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      object-fit: cover;
+      transition: border 0.2s;
+    }
+    .wallpaper-thumb.selected {
+      border: 2px solid #007aff;
+    }
+    .wallpaper-upload {
+      margin-top: 6px;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 18px 4vw 0 4vw; }
+      .favorites-grid, .frequent-grid { gap: 18px 10px; }
+      .privacy-section { max-width: 98vw; }
+      .bottom-right-menu { right: 8px; bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="favorites-title">Favorites</div>
+    <div class="favorites-grid">
+      <a class="favorite-link" href="https://www.apple.com">
+        <div class="favorite-icon">
+          <img src="https://www.apple.com/favicon.ico" alt="Apple" />
+        </div>
+        <span class="favorite-label">Apple</span>
+      </a>
+      <a class="favorite-link" href="https://www.icloud.com">
+        <div class="favorite-icon">
+          <img src="https://www.icloud.com/favicon.ico" alt="iCloud" />
+        </div>
+        <span class="favorite-label">iCloud</span>
+      </a>
+      <a class="favorite-link" href="https://www.yahoo.com">
+        <div class="favorite-icon">
+          <img src="https://www.yahoo.com/favicon.ico" alt="Yahoo" />
+        </div>
+        <span class="favorite-label">Yahoo</span>
+      </a>
+      <a class="favorite-link" href="https://www.bing.com">
+        <div class="favorite-icon">
+          <img src="https://www.bing.com/favicon.ico" alt="Bing" />
+        </div>
+        <span class="favorite-label">Bing</span>
+      </a>
+      <a class="favorite-link" href="https://www.google.com">
+        <div class="favorite-icon">
+          <img src="https://www.google.com/favicon.ico" alt="Google" />
+        </div>
+        <span class="favorite-label">Google</span>
+      </a>
+      <a class="favorite-link" href="https://www.wikipedia.org">
+        <div class="favorite-icon">
+          <img src="https://www.wikipedia.org/static/favicon/wikipedia.ico" alt="Wikipedia" />
+        </div>
+        <span class="favorite-label">Wikipedia</span>
+      </a>
+      <a class="favorite-link" href="https://www.facebook.com">
+        <div class="favorite-icon">
+          <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
+        </div>
+        <span class="favorite-label">Facebook</span>
+      </a>
+      <a class="favorite-link" href="https://www.twitter.com">
+        <div class="favorite-icon">
+          <img src="https://www.twitter.com/favicon.ico" alt="Twitter" />
+        </div>
+        <span class="favorite-label">Twitter</span>
+      </a>
+      <a class="favorite-link" href="https://www.linkedin.com">
+        <div class="favorite-icon">
+          <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
+        </div>
+        <span class="favorite-label">LinkedIn</span>
+      </a>
+      <a class="favorite-link" href="https://weather.com">
+        <div class="favorite-icon">
+          <img src="https://weather.com/favicon.ico" alt="The Weather Channel" />
+        </div>
+        <span class="favorite-label">The Weather...</span>
+      </a>
+      <a class="favorite-link" href="https://www.yelp.com">
+        <div class="favorite-icon">
+          <img src="https://www.yelp.com/favicon.ico" alt="Yelp" />
+        </div>
+        <span class="favorite-label">Yelp</span>
+      </a>
+      <a class="favorite-link" href="https://www.tripadvisor.com">
+        <div class="favorite-icon">
+          <img src="https://www.tripadvisor.com/favicon.ico" alt="TripAdvisor" />
+        </div>
+        <span class="favorite-label">TripAdvisor</span>
+      </a>
+    </div>
+
+    <div class="frequent-title">Frequently Visited</div>
+    <div class="frequent-grid" id="frequentGrid">
+      <span style="color:#888;font-size:1rem;">No frequently visited sites yet.</span>
+    </div>
+
+    <div class="privacy-section">
+      <div class="privacy-title">Privacy Report</div>
+      <div class="privacy-box">
+        <span class="privacy-icon">
+          <!-- Simple shield icon SVG -->
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 3L18 6V11C18 15.4183 14.4183 19 10 19C5.58172 19 2 15.4183 2 11V6L9 3H11Z" stroke="#aaa" stroke-width="1.5" fill="none"/>
+          </svg>
+        </span>
+        Safari has not encountered any trackers in the last seven days.
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom right menu -->
+  <div class="bottom-right-menu" id="bottomRightMenu">
+    <button class="menu-btn" id="wallpaperBtn" title="Change Wallpaper">
+      <!-- Wallpaper icon SVG -->
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="8" cy="10" r="2" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M21 19L16 13L10 19" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </button>
+  </div>
+  <!-- Wallpaper picker popup -->
+  <div class="wallpaper-picker" id="wallpaperPicker">
+    <label>Choose Wallpaper</label>
+    <div class="wallpaper-options">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" class="wallpaper-thumb" data-wallpaper="url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80')" alt="Wallpaper 1">
+      <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" class="wallpaper-thumb" data-wallpaper="url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80')" alt="Wallpaper 2">
+      <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=400&q=80" class="wallpaper-thumb" data-wallpaper="url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80')" alt="Wallpaper 3">
+      <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80" class="wallpaper-thumb" data-wallpaper="url('https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=1200&q=80')" alt="Wallpaper 4">
+    </div>
+    <input type="file" accept="image/*" class="wallpaper-upload" id="wallpaperUpload">
+  </div>
+  <script>
+    // Bottom right menu logic
+    const wallpaperBtn = document.getElementById('wallpaperBtn');
+    const wallpaperPicker = document.getElementById('wallpaperPicker');
+    let pickerOpen = false;
+
+    wallpaperBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wallpaperPicker.style.display = pickerOpen ? 'none' : 'block';
+      pickerOpen = !pickerOpen;
+    });
+
+    // Hide picker when clicking outside
+    document.addEventListener('click', (e) => {
+      if (pickerOpen && !wallpaperPicker.contains(e.target) && e.target !== wallpaperBtn) {
+        wallpaperPicker.style.display = 'none';
+        pickerOpen = false;
+      }
+    });
+
+    // Position the picker above the menu
+    function positionPicker() {
+      const menu = document.getElementById('bottomRightMenu');
+      const picker = wallpaperPicker;
+      const rect = menu.getBoundingClientRect();
+      picker.style.right = (window.innerWidth - rect.right) + 'px';
+      picker.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    }
+    wallpaperBtn.addEventListener('click', positionPicker);
+    window.addEventListener('resize', () => { if (pickerOpen) positionPicker(); });
+
+    // Wallpaper selection logic
+    const wallpaperThumbs = document.querySelectorAll('.wallpaper-thumb');
+    function setWallpaper(bg) {
+      document.body.style.background = bg + ' center center / cover no-repeat fixed';
+      // Save to localStorage
+      localStorage.setItem('safari_wallpaper', bg);
+      // Highlight selected
+      wallpaperThumbs.forEach(thumb => {
+        thumb.classList.toggle('selected', thumb.dataset.wallpaper === bg);
+      });
+    }
+    wallpaperThumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => setWallpaper(thumb.dataset.wallpaper));
+    });
+
+    // Custom upload
+    document.getElementById('wallpaperUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const bg = `url('${evt.target.result}')`;
+        setWallpaper(bg);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Load saved wallpaper
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('safari_wallpaper');
+      if (saved) {
+        setWallpaper(saved);
+      }
+    });
+
+    // --- Frequently Visited Integration with C# ---
+    // List of all favorite sites (label, url, favicon)
+    const favoriteLinks = document.querySelectorAll('.favorite-link');
+    const sites = Array.from(favoriteLinks).map(link => ({
+      label: link.querySelector('.favorite-label').textContent,
+      url: link.href,
+      icon: link.querySelector('img').src
+    }));
+
+    // This function will be called by your C# code
+    function setMostVisitedLinks(links) {
+      const frequentGrid = document.getElementById('frequentGrid');
+      frequentGrid.innerHTML = '';
+      if (!links || links.length === 0) {
+        frequentGrid.innerHTML = '<span style="color:#888;font-size:1rem;">No frequently visited sites yet.</span>';
+        return;
+      }
+      links.forEach(url => {
+        // Try to find a matching favorite for label/icon, fallback to hostname
+        const site = sites.find(s => s.url === url);
+        let label, icon;
+        if (site) {
+          label = site.label;
+          icon = site.icon;
+        } else {
+          try {
+            label = (new URL(url)).hostname.replace(/^www\./, '');
+          } catch {
+            label = url;
+          }
+          icon = 'https://www.google.com/s2/favicons?domain=' + url;
+        }
+        const div = document.createElement('a');
+        div.className = 'frequent-link';
+        div.href = url;
+        div.innerHTML = `
+          <div class="frequent-icon">
+            <img src="${icon}" alt="${label}" />
+          </div>
+          <span class="frequent-label">${label}</span>
+        `;
+        frequentGrid.appendChild(div);
+      });
+    }
+    // For debugging, you can uncomment the next line:
+    // setMostVisitedLinks(['https://www.google.com', 'https://www.apple.com']);
+  </script>
+</body>
+</html>

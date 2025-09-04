@@ -1,0 +1,34 @@
+<UserControl
+    x:Class="App3.Controls.TabSwitcherPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <!-- Mica-like fallback using AcrylicBrush (WinUI 3): Remove BackgroundSource property -->
+        <Grid.Background>
+            <AcrylicBrush
+                TintColor="#CCFFFFFF"
+                TintOpacity="0.85"
+                FallbackColor="#F3F3F3"/>
+        </Grid.Background>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="24">
+            <TextBlock Text="Tab Switcher" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,12" HorizontalAlignment="Center"/>
+            <ScrollViewer HorizontalScrollMode="Auto" VerticalScrollMode="Disabled"
+                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
+                          Height="220" Width="900">
+                <ItemsControl x:Name="TabsPanel" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="24"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock Text="Click a preview to switch tabs" FontSize="14" Opacity="0.6" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

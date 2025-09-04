@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="App3.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App3" xmlns:local1="using:App3.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <!-- Other merged dictionaries here -->
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Add a fallback Shadow resource to prevent WinRT originate error -->
+            <SolidColorBrush x:Key="Shadow" Color="#33000000" />
+
+            <!-- Navigation Button Style -->
+            <Style x:Key="NavigationButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="8"/>
+                <Setter Property="Width" Value="32"/>
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="RootBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Content="{TemplateBinding Content}"/>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootBorder.Background" Value="{ThemeResource ButtonBackgroundPointerOver}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootBorder.Background" Value="{ThemeResource ButtonBackgroundPressed}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="ContentPresenter.Opacity" Value="0.5"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Tab Preview Template -->
+            <DataTemplate x:Key="TabPreviewTemplate">
+                <TextBlock Text="{Binding Title}" />
+            </DataTemplate>
+
+            <!-- Tab View Item Style with Dynamic Size Adaptation -->
+            <Style x:Key="PolishedTabViewItemStyle" TargetType="TabViewItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="12,4,12,4"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabViewItem">
+                    <Grid x:Name="TabRoot" Background="Transparent" 
+                          Margin="0,2,0,0" MinWidth="100" MaxWidth="300" HorizontalAlignment="Stretch">
+                        <Grid.Resources>
+                            <ResourceDictionary>
+                                <Storyboard x:Name="HoverAnimation">
+                                    <DoubleAnimation Duration="0:0:0.15" To="1" 
+                                                     Storyboard.TargetName="TabBackgroundElement"
+                                                     Storyboard.TargetProperty="Opacity"/>
+                                </Storyboard>
+                                <Storyboard x:Name="UnhoverAnimation">
+                                    <DoubleAnimation Duration="0:0:0.15" To="0" 
+                                                     Storyboard.TargetName="TabBackgroundElement"
+                                                     Storyboard.TargetProperty="Opacity"/>
+                                </Storyboard>
+                            </ResourceDictionary>
+                        </Grid.Resources>
+                        
+                        <!-- Changed to use semi-transparent background for Mica effect -->
+                        <Border x:Name="TabBackgroundElement" 
+                                CornerRadius="6,6,0,0"
+                                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                                Opacity="0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                        
+                        <Border x:Name="ActiveIndicator" 
+                                Height="3" 
+                                Background="{ThemeResource TabViewSelectedItemIndicator}" 
+                                VerticalAlignment="Bottom" 
+                                Opacity="0"/>
+                                
+                        <Grid Margin="{TemplateBinding Padding}" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Icon -->
+                            <ContentPresenter x:Name="IconPresenter" 
+                                            Content="{TemplateBinding IconSource}"
+                                            Margin="0,0,8,0"
+                                            VerticalAlignment="Center"/>
+
+                            <!-- Header with text trimming -->
+                            <ContentPresenter x:Name="HeaderContentPresenter"
+                                Grid.Column="1"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                Content="{TemplateBinding Header}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center" />
+
+                            <!-- Close Button -->
+                            <Button x:Name="CloseButton"
+                                    Grid.Column="2"
+                                    Style="{StaticResource TabCloseButtonStyle}"
+                                    Margin="4,0,0,0"
+                                    IsTabStop="False"
+                                    Command="{TemplateBinding CloseCommand}"
+                                    Visibility="{Binding IsClosable, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8BB;" FontSize="10"/>
+                            </Button>
+                        </Grid>
+                        
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <!-- Use semi-transparent accent color to allow Mica through -->
+                                                <Setter Target="TabBackgroundElement.Background">
+                                                    <Setter.Value>
+                                                        <SolidColorBrush Color="{ThemeResource SystemAccentColorLight2}" Opacity="0.3"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Target="TabBackgroundElement.Opacity" Value="1"/>
+                                                <Setter Target="ActiveIndicator.Opacity" Value="1"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                
+                                        <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="TabBackgroundElement.Background" 
+                                                Value="{ThemeResource ButtonBackgroundPointerOver}"/>
+                                        <Setter Target="TabBackgroundElement.Opacity" Value="0.7"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+            
+
+    <!-- Close Button Style -->
+            <Style x:Key="TabCloseButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="RootGrid" Background="Transparent">
+                                <Border x:Name="ButtonBackground" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                <ContentPresenter x:Name="ContentPresenter"
+                                         Content="{TemplateBinding Content}"
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"/>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="ButtonBackground.Background" Value="{ThemeResource SystemFillColorCriticalBackground}"/>
+                                                <Setter Target="ContentPresenter.Foreground" Value="White"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="ButtonBackground.Background" Value="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                                <Setter Target="ContentPresenter.Foreground" Value="White"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Other app resources here -->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

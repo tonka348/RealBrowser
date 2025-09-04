@@ -1,0 +1,28 @@
+<Page
+    x:Class="App3.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App3"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Padding="32" Spacing="18">
+        <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,18"/>
+        
+        <ComboBox x:Name="HomePageCombo" Header="Homepage" Width="240" Margin="0,8,0,0">
+            <ComboBoxItem Content="Default"/>
+            <ComboBoxItem Content="Blank"/>
+            <ComboBoxItem Content="Custom..."/>
+        </ComboBox>
+
+        <Button Content="Clear Most Visited Sites" Click="ClearMostVisited_Click" Margin="0,18,0,0"/>
+
+        <ToggleSwitch x:Name="DarkModeSwitch" Header="Dark Mode" Toggled="DarkModeSwitch_Toggled"/>
+
+        <!-- New Settings -->
+        <ToggleSwitch x:Name="EnableAnimationsSwitch" Header="Enable Animations" Toggled="EnableAnimationsSwitch_Toggled"/>
+        <ToggleSwitch x:Name="EnableSwipeGesturesSwitch" Header="Enable Swipe Gestures" Toggled="EnableSwipeGesturesSwitch_Toggled"/>
+        <Slider x:Name="ZoomSlider" Header="Default Zoom" Minimum="0.5" Maximum="2.0" Value="1.0" TickFrequency="0.1" Width="200" Margin="0,8,0,0"/>
+        <TextBox x:Name="CustomHomePageBox" Header="Custom Homepage URL" PlaceholderText="https://example.com" Margin="0,8,0,0"/>
+        <Button Content="Reset All Settings" Click="ResetAllSettings_Click" Margin="0,18,0,0"/>
+    </StackPanel>
+</Page>

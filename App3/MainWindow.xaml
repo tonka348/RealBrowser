@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="App3.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App3"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title=""
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Titlebar/Search -->
+            <RowDefinition Height="Auto"/> <!-- Tab Bar -->
+            <RowDefinition Height="*"/>    <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- Custom Title Bar -->
+        <Grid x:Name="CustomTitleBar" Grid.Row="0" Background="Transparent" Height="48" Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>   <!-- Back -->
+                <ColumnDefinition Width="Auto"/>   <!-- Forward -->
+                <ColumnDefinition Width="Auto"/>   <!-- Site Info/Shield -->
+                <ColumnDefinition Width="*"/>      <!-- Search Bar -->
+                <ColumnDefinition Width="Auto"/>   <!-- Share -->
+                <ColumnDefinition Width="Auto"/>   <!-- Show Tabs -->
+                <ColumnDefinition Width="Auto"/>   <!-- Add Tab -->
+                <ColumnDefinition Width="Auto"/>   <!-- Settings -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Back Button (FontIcon, always visible, theme-aware) -->
+            <Button x:Name="BackButton"
+                    Grid.Column="0"
+                    Click="BackButton_Click"
+                    Style="{StaticResource NavigationButtonStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0">
+                <FontIcon FontFamily="Segoe MDL2 Assets"
+                          Glyph="&#xE72B;"
+                          FontSize="16"
+                          Foreground="{ThemeResource SystemBaseHighColor}"/>
+            </Button>
+
+            <!-- Forward Button (FontIcon, always visible, theme-aware) -->
+            <Button x:Name="ForwardButton"
+                    Grid.Column="1"
+                    Click="ForwardButton_Click"
+                    Style="{StaticResource NavigationButtonStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="4,0,0,0">
+                <FontIcon FontFamily="Segoe MDL2 Assets"
+                          Glyph="&#xE72A;"
+                          FontSize="16"
+                          Foreground="{ThemeResource SystemBaseHighColor}"/>
+            </Button>
+
+            <!-- Site Info/Shield Icon -->
+            <Button x:Name="SiteInfoButton" Grid.Column="2" Click="SiteInfoButton_Click" Style="{StaticResource NavigationButtonStyle}" Margin="4,0,0,0">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource SystemBaseHighColor}"/>
+            </Button>
+
+            <!-- Search Bar -->
+            <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" MinWidth="200" MaxWidth="600" x:Name="SearchContainer">
+                <!-- Loading line animation -->
+                <Rectangle x:Name="SearchLoadingLine"
+                           Height="5"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left"
+                           Fill="#FF0078D7"
+                           RadiusX="1"
+                           RadiusY="1"
+                           Width="2"
+                           Visibility="Collapsed"/>
+                <AutoSuggestBox x:Name="SearchBox"
+                                PlaceholderText="Search or enter address"
+                                MinWidth="200"
+                                MaxWidth="600"
+                                QueryIcon="Find"
+                                CornerRadius="20"
+                                HorizontalAlignment="Stretch"
+                                TextChanged="SearchBox_TextChanged"
+                                QuerySubmitted="SearchBox_QuerySubmitted"
+                                SuggestionChosen="SearchBox_SuggestionChosen"
+                                GotFocus="SearchBox_GotFocus"
+                                RightTapped="SearchBox_RightTapped"/>
+            </Grid>
+           
+
+            <!-- Share Button -->
+            
+
+            <!-- Show Tabs Button (NEW) -->
+            
+
+            <!-- Add New Tab Button -->
+            <Button x:Name="AddNewTabButton"
+                    Grid.Column="6"
+                    Click="AddNewTabButton_Click"
+                    Style="{StaticResource NavigationButtonStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0,-16,0,0">
+                <FontIcon FontFamily="Segoe MDL2 Assets"
+                          Glyph="&#xE710;"
+                          FontSize="12"
+                          Foreground="{ThemeResource SystemBaseHighColor}"/>
+            </Button>
+
+            <!-- Settings Button -->
+            <Button x:Name="SettingsButton"
+                    Grid.Column="7"
+                    Click="SettingsButton_Click"
+                    Style="{StaticResource NavigationButtonStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,150,18">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="12" Foreground="{ThemeResource SystemBaseHighColor}"/>
+            </Button>
+        </Grid>
+
+        <!-- Tab Bar -->
+        <Grid x:Name="TabBarGrid" Grid.Row="1" HorizontalAlignment="Stretch" Visibility="Visible">
+            <Border
+                Background="Transparent"
+                CornerRadius="8,8,0,0"
+                Margin="0,0,0,2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+                <!-- FIX: Move TabItemStyle property inside TabView tag and remove it from outside -->
+                <TabView x:Name="BrowserTabView"
+                         TabCloseRequested="BrowserTabView_TabCloseRequested"
+                         TabWidthMode="Equal"
+                         
+                         IsAddTabButtonVisible="False"
+                         SelectionChanged="BrowserTabView_SelectionChanged">
+                </TabView>
+            </Border>
+        </Grid>
+
+        <!-- Content -->
+        <Grid x:Name="ContentGrid" Grid.Row="2" Margin="0,-3,0,0" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Frame x:Name="MainFrame" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+        </Grid>
+
+        <!-- Swipe Feedback Overlay -->
+        <Grid x:Name="SwipeFeedbackOverlay"
+              Visibility="Collapsed"
+              IsHitTestVisible="False"
+              Background="Transparent"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              >
+            <Border x:Name="SwipeFeedbackBorder"
+                    Width="120"
+                    Height="120"
+                    CornerRadius="60"
+                    Background="#66007ACC"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Opacity="0">
+                <FontIcon x:Name="SwipeFeedbackIcon"
+                          FontFamily="Segoe MDL2 Assets"
+                          Glyph="&#xE72B;"  
+                          FontSize="64"
+                          Foreground="White"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
+            </Border>
+            <Grid.Resources>
+                <Storyboard x:Key="SwipeFeedbackStoryboard">
+                    <DoubleAnimation Storyboard.TargetName="SwipeFeedbackBorder"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1"
+                                     Duration="0:0:0.12" />
+                    <DoubleAnimation Storyboard.TargetName="SwipeFeedbackBorder"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="1" To="0"
+                                     BeginTime="0:0:0.32"
+                                     Duration="0:0:0.2" />
+                </Storyboard>
+            </Grid.Resources>
+        </Grid>
+
+        <!-- Left Swipe Feedback Overlay -->
+        <Grid x:Name="LeftSwipeFeedbackOverlay"
+              Visibility="Collapsed"
+              IsHitTestVisible="False"
+              Background="Transparent"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
+              Width="120" Height="120"
+              Margin="1380,300,0,-500"
+              >
+            <Grid.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Grid.RenderTransform>
+            <Grid.Resources>
+                <Storyboard x:Key="LeftSwipeFadeStoryboard">
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="LeftSwipeFeedbackOverlay"
+                                   Storyboard.TargetProperty="Opacity">
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="1"/>
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.44" Value="0"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+            </Grid.Resources>
+            <Border Background="#66007ACC" CornerRadius="60" Opacity="0.95">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72A;" FontSize="48" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <!-- Right Swipe Feedback Overlay -->
+        <Grid x:Name="RightSwipeFeedbackOverlay"
+              Visibility="Collapsed"
+              IsHitTestVisible="False"
+              Background="Transparent"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Width="120" Height="120"
+              Margin="0,300,1380,-500"
+              >
+            <Grid.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Grid.RenderTransform>
+            <Grid.Resources>
+                <Storyboard x:Key="RightSwipeFadeStoryboard">
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RightSwipeFeedbackOverlay"
+                                                   Storyboard.TargetProperty="Opacity">
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="1"/>
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.44" Value="0"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="StartLoadingLineStoryboard">
+                    <DoubleAnimation
+                        Storyboard.TargetName="SearchLoadingLine"
+                        Storyboard.TargetProperty="Width"
+                        Duration="0:0:1.5"
+                        FillBehavior="HoldEnd"/>
+                </Storyboard>
+                <Storyboard x:Key="FinishLoadingLineStoryboard">
+                    <DoubleAnimation
+                        Storyboard.TargetName="SearchLoadingLine"
+                        Storyboard.TargetProperty="Width"
+                        Duration="0:0:0.3"
+                        FillBehavior="Stop"/>
+                </Storyboard>
+            </Grid.Resources>
+            <Border Background="#66007ACC" CornerRadius="60" Opacity="0.95">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72B;" FontSize="48" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ScrollViewer
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Auto"
+                ZoomMode="Enabled"
+                IsScrollInertiaEnabled="True"
+                IsHorizontalRailEnabled="True"
+                IsVerticalRailEnabled="True">
+                <!-- Your scrollable content here -->
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

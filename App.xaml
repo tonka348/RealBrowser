@@ -1,0 +1,41 @@
+<Application.Resources>
+    <ResourceDictionary>
+        <!-- Other resources -->
+        
+        <!-- Tab View Item Style with Acrylic Support -->
+        <Style x:Key="AcrylicTabViewItemStyle" TargetType="TabViewItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabViewItem">
+                        <Grid x:Name="TabViewItemGrid" Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ContentPresenter x:Name="TabContentPresenter"
+                                            Content="{TemplateBinding Header}"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            Margin="8,4" />
+                            <Border x:Name="SelectionIndicator" 
+                                    Grid.Row="1" 
+                                    Background="{ThemeResource SystemAccentColor}"
+                                    Height="2" 
+                                    Opacity="0"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Target="SelectionIndicator.Opacity" Value="1"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ResourceDictionary>
+</Application.Resources>
